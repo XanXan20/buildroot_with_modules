@@ -1,0 +1,4 @@
+config BR2_PACKAGE_BRM
+	bool "brm"
+	help
+	  Util for manange module packages 

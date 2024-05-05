@@ -1,0 +1,5 @@
+NAME=Buildroot
+VERSION=-gacd09774-dirty
+ID=buildroot
+VERSION_ID=2024.02-rc1
+PRETTY_NAME="Buildroot 2024.02-rc1"

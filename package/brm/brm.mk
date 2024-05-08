@@ -12,7 +12,6 @@ define BRM_INSTALL_TARGET_CMDS
 	cp $(@D)/preinit $(TARGET_DIR)/sbin
 	mkdir -p $(TARGET_DIR)/sbin/brm
 	install $(@D)/brm $(TARGET_DIR)/sbin/brm
-	cp $(@D)/.path $(TARGET_DIR)/sbin/brm
 endef
 
 $(eval $(generic-package))

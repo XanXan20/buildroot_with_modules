@@ -386,7 +386,7 @@ $(BUILD_DIR)/%/.stamp_target_installed:
 
 	if test -d "$(MODULES_DIR)/$(NAME)" ; then \
 		mksquashfs $(TARGET_DIR) $(TARGET_DIR).squashfs ; \
-		echo " $(NAME).squashfs" >> $(MODULES_DIR)/.modconfig ; \
+		echo "$(NAME).squashfs" >> $(MODULES_DIR)/.modconfig ; \
 		rm -r $(TARGET_DIR) ; \
 	fi
 

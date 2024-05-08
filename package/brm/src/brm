@@ -46,7 +46,7 @@ else
 
 			-n) #выключение пакета
 				dev_path="$2"
-				str=/$3.squashfs/s/^/#/
+				str=/^$3.squashfs/s/^/#/
 
 				mount $dev_path /mnt
 				sed -i $str /mnt/.modconfig

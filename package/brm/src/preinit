@@ -1,0 +1,51 @@
+#!/bin/sh
+export PATH=/bin:/sbin:/usr/bin:/usr/sbin
+
+lower_list=/
+/bin/mount -t devtmpfs devtmpfs /dev
+
+cd /sbin/brm
+
+mnt_point=/mnt/dev
+mkdir -p /mnt/dev
+cat /dev/null > .paths
+
+mount -t tmpfs tmpfs /mnt/
+
+echo "Поиск внешних устройств"
+for dev in /dev/sd* ; do
+	dev_base_name=$(basename $dev)
+
+	mkdir -p $mnt_point/$dev_base_name
+
+	mount $dev $mnt_point/$dev_base_name
+
+	if test -e $mnt_point/$dev_base_name/.modconfig ; then
+
+		echo $dev >> .paths
+
+		for pkg in $(cat $mnt_point/$dev_base_name/.modconfig) ; do
+			if [ -z "$(echo "$pkg" | sed -n '/^#/p')" ] ; then
+				pkg_name=${pkg#".squashfs"}
+				mkdir -p /mnt/packages/$pkg
+
+				mount -t squashfs $mnt_point/$dev_base_name/$pkg /mnt/packages/$pkg_name
+				lower_list=$lower_list:/mnt/packages/$pkg_name
+			fi
+		done
+	else
+		umount $mnt_point/$dev_base_name
+	fi
+done
+
+if [ "$lower_list" != "/" ] ; then
+	mkdir -p /mnt/overlay
+	echo "Монтирование overlayfs"
+	mount -t overlay overlay -o lowerdir="$lower_list" /mnt/overlay
+
+	echo "Передача управления /sbin/init"
+	cd /mnt/overlay
+	exec switch_root /mnt/overlay /sbin/init
+else
+	exec /sbin/init
+fi

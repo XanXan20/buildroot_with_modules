@@ -11,6 +11,8 @@ menu "Target packages"
 		default "$(BASE_DIR)/packages"
 		depends on BR2_MODULES
 
+	source "package/brm/Config.in"
+
 	source "package/busybox/Config.in"
 	source "package/skeleton/Config.in"
 	source "package/skeleton-custom/Config.in"

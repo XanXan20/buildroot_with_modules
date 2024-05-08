@@ -1,0 +1,66 @@
+#!/bin/sh
+path=/sbin/brm/.paths
+
+help_txt="This is help function text"
+
+if [ -z $(cat $path) ] ; then
+	echo ".paths is empty, devices not found"
+	exit
+fi
+
+if [ -z $1 ] ; then
+	#вывод всех пакетов
+	for dev in $(cat $path) ; do
+		mount $dev /mnt
+		for pkg in $(cat /mnt/.modconfig) ; do
+			if [ -z $(echo $pkg | sed -n '/^#/p') ] ; then
+				echo -e "Device path: $dev\t Package path: ${pkg%".squashfs"}"
+			fi
+		done
+		umount /mnt
+	done
+else
+	while [ -n "$1" ] ; do
+		case "$1" in
+			-a) #вывод всех пакетов
+			for dev in $(cat $path) ; do
+				mount $dev /mnt
+				for pkg in $(cat /mnt/.modconfig) ; do
+					echo -e "Device path: $dev\t Package path: ${pkg%".squashfs"}"
+				done
+				umount /mnt
+			done
+			;;
+
+			-y) #включение пакета
+				dev_path="$2"
+				str=/$3.squashfs/s/^#//
+
+				mount $dev_path /mnt
+				sed -i $str /mnt/.modconfig
+				umount /mnt
+
+				shift
+				shift
+				;;
+
+			-n) #выключение пакета
+				dev_path="$2"
+				str=/$3.squashfs/s/^/#/
+
+				mount $dev_path /mnt
+				sed -i $str /mnt/.modconfig
+				umount /mnt
+
+				shift
+				shift
+				;;
+
+			-h) echo $help_txt ;;
+			--) shift
+				break ;;
+			*) echo "parameter $1 nonexist" ;;
+		esac
+		shift
+	done
+fi

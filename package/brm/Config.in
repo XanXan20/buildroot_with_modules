@@ -2,3 +2,5 @@ config BR2_PACKAGE_BRM
 	bool "brm"
 	help
 	  Util for manange module packages 
+
+	  	https://github.com/XanXan20/brm/archive/refs/tags/brm-v0.10-alpha.tar.gz
